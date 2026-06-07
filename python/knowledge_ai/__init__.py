@@ -9,7 +9,7 @@ Uses:
 - consensus-ai: Multi-AI validation
 """
 
-__version__ = "0.3"
+__version__ = "0.4"
 __author__ = "FlossWare (sfloess)"
 __license__ = "GPL-3.0"
 
