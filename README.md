@@ -77,7 +77,12 @@ console.log(result.sources)  // Citations
 ### Python
 
 ```bash
-cd python/
+# Install consensus-ai first (dependency)
+cd ~/Development/redhat/scm/gitlab/cee/sfloess/consensus-ai/python/
+pip install -e .
+
+# Then install knowledge-forge
+cd ~/Development/redhat/scm/gitlab/cee/sfloess/knowledge-forge/python/
 pip install -e .
 
 # Or with all dependencies:
@@ -87,7 +92,13 @@ pip install -e .[all]
 ### JavaScript
 
 ```bash
-cd javascript/
+# Install consensus-ai first (dependency)
+cd ~/Development/redhat/scm/gitlab/cee/sfloess/consensus-ai/javascript/
+npm install
+npm run build
+
+# Then install knowledge-forge
+cd ~/Development/redhat/scm/gitlab/cee/sfloess/knowledge-forge/javascript/
 npm install
 npm run build
 ```
