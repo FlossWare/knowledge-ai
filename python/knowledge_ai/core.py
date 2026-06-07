@@ -6,9 +6,11 @@ from typing import List, Dict, Any, Optional, Union
 from pathlib import Path
 import logging
 
-from knowledge_ai.ingest.detector import FormatDetector
-from knowledge_ai.extract.arbiter import ArbiterWorkerExtractor
 from vectordb_ai import VectorStoreFactory, EmbeddingGenerator
+
+# TODO: Implement format detection and extraction modules
+# from knowledge_ai.ingest.detector import FormatDetector
+# from knowledge_ai.extract.arbiter import ArbiterWorkerExtractor
 
 logger = logging.getLogger(__name__)
 
@@ -67,9 +69,6 @@ class KnowledgeAI:
         # Initialize components
         # Note: detector, extractor are placeholders (not yet implemented)
         # self.detector = FormatDetector()
-
-        from knowledge_forge.store.embeddings import EmbeddingGenerator
-        from knowledge_forge.store.factory import VectorStoreFactory
 
         self.embedding_generator = EmbeddingGenerator(model_name=embedding_model)
 
@@ -145,11 +144,15 @@ class KnowledgeAI:
         """
         logger.info(f"Learning from URL: {url}")
 
-        # Import web parser
-        from knowledge_forge.ingest.web import WebParser
+        # TODO: Implement web parser
+        # from knowledge_ai.ingest.web import WebParser
+        # parser = WebParser()
+        # text = parser.parse_url(url)
 
-        parser = WebParser()
-        text = parser.parse_url(url)
+        # Placeholder: use requests for now
+        import requests
+        response = requests.get(url)
+        text = response.text
 
         return self.learn_from_text(text, source=url, **kwargs)
 
@@ -260,8 +263,8 @@ class KnowledgeAI:
             for i, fact in enumerate(facts):
                 fact['embedding'] = embeddings[i]
 
-        # Convert dict facts to Fact objects if needed
-        from knowledge_forge.store.base import ContentChunk
+        # Convert dict facts to ContentChunk objects
+        from vectordb_ai import ContentChunk
         chunk_objects = []
         for i, fact in enumerate(facts):
             chunk_objects.append(ContentChunk(
