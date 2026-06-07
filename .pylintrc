@@ -1,0 +1,25 @@
+[MASTER]
+jobs=0
+suggestion-mode=yes
+
+[MESSAGES CONTROL]
+disable=
+    C0103,  # Invalid name (allow short variable names)
+    C0114,  # Missing module docstring
+    C0115,  # Missing class docstring
+    C0116,  # Missing function docstring
+    R0903,  # Too few public methods
+    R0913,  # Too many arguments
+    W0212,  # Access to protected member
+    C0301,  # Line too long (handled by black)
+
+[FORMAT]
+max-line-length=120
+
+[DESIGN]
+max-args=10
+max-attributes=15
+max-parents=10
+
+[SIMILARITIES]
+min-similarity-lines=10
