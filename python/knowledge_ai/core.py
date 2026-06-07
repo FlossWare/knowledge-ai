@@ -1,29 +1,28 @@
 """
-Core KnowledgeForge class - main entry point for the library
+Core KnowledgeAI class - main entry point for the library
 """
 
 from typing import List, Dict, Any, Optional, Union
 from pathlib import Path
 import logging
 
-from knowledge_forge.ingest.detector import FormatDetector
-from knowledge_forge.extract.arbiter import ArbiterWorkerExtractor
-from knowledge_forge.store.chromadb import ChromaDBStore
-from knowledge_forge.store.embeddings import EmbeddingGenerator
+from knowledge_ai.ingest.detector import FormatDetector
+from knowledge_ai.extract.arbiter import ArbiterWorkerExtractor
+from vectordb_ai import VectorStoreFactory, EmbeddingGenerator
 
 logger = logging.getLogger(__name__)
 
 
-class KnowledgeForge:
+class KnowledgeAI:
     """
     Universal knowledge ingestion library
 
     Learn from ANY documentation format with multi-AI consensus validation.
 
     Example:
-        >>> forge = KnowledgeForge(collection='my-docs')
-        >>> forge.learn_from_file('/path/to/tutorial.pdf')
-        >>> result = forge.query('How does authentication work?')
+        >>> ai = KnowledgeAI(collection='my-docs')
+        >>> ai.learn_from_file('/path/to/tutorial.pdf')
+        >>> result = ai.query('How does authentication work?')
         >>> print(result.answer)
     """
 
@@ -41,11 +40,11 @@ class KnowledgeForge:
         verbose: bool = False,
     ):
         """
-        Initialize Knowledge Forge
+        Initialize Knowledge AI
 
         Args:
             collection: Name of the knowledge base collection
-            persist_directory: Where to store ChromaDB data
+            persist_directory: Where to store vector database data
             embedding_model: Sentence transformer model name
             workers: List of AI models for extraction (e.g., ['claude-opus', 'gpt4'])
             arbiter: Arbiter model for validation (default: first worker)

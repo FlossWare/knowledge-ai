@@ -1,8 +1,10 @@
-# Knowledge Forge
+# Knowledge AI
 
 **Universal knowledge ingestion library for AI systems**
 
 Learn from ANY documentation format with multi-AI consensus validation.
+
+Part of the **FlossWare AI** ecosystem.
 
 ---
 
@@ -13,9 +15,10 @@ Learn from ANY documentation format with multi-AI consensus validation.
 - **Universal Format Support**: PDF, Markdown, HTML, reStructuredText, AsciiDoc, plain text
 - **Code Documentation**: Docstrings, JSDoc, Javadoc, GoDoc, OpenAPI specs
 - **Auto-Detection**: Automatically detects and parses input format
-- **Multi-AI Consensus**: Arbiter/worker pattern for fact extraction
-- **Semantic Storage**: ChromaDB vector database with 384-dim embeddings
-- **RAG Retrieval**: Semantic search for knowledge retrieval
+- **Multi-AI Consensus**: Uses consensus-ai for fact extraction
+- **Vector Storage**: Uses vectordb-ai (9 database backends)
+- **Advanced Search**: Uses semantic-search-ai (hybrid, reranking, filtering)
+- **Semantic Embeddings**: 384-dim vectors for meaning-based retrieval
 - **Dual Implementation**: Python (for Universal AI) + JavaScript (for Claude Code)
 
 ### 🎯 Use Cases
@@ -33,19 +36,19 @@ Learn from ANY documentation format with multi-AI consensus validation.
 ### Python (Universal AI)
 
 ```python
-from knowledge_forge import KnowledgeForge
+from knowledge_ai import KnowledgeAI
 
 # Create knowledge base
-forge = KnowledgeForge(collection='my-docs')
+ai = KnowledgeAI(collection='my-docs')
 
 # Learn from any source (auto-detects format)
-forge.learn_from_file('/path/to/tutorial.pdf')
-forge.learn_from_file('/path/to/README.md')
-forge.learn_from_url('https://docs.example.com')
-forge.learn_from_directory('/path/to/docs/')
+ai.learn_from_file('/path/to/tutorial.pdf')
+ai.learn_from_file('/path/to/README.md')
+ai.learn_from_url('https://docs.example.com')
+ai.learn_from_directory('/path/to/docs/')
 
 # Query with RAG
-result = forge.query('How does authentication work?')
+result = ai.query('How does authentication work?')
 print(result.answer)
 print(result.sources)  # Citations
 ```

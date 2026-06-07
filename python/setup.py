@@ -4,14 +4,14 @@ with open("../README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
-    name="knowledge-forge",
-    version="0.1.0",
+    name="knowledge-ai",
+    version="0.2.0",
     author="FlossWare (sfloess)",
     author_email="sfloess@redhat.com",
     description="Universal knowledge ingestion library for AI systems",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://gitlab.cee.redhat.com/sfloess/knowledge-forge",
+    url="https://gitlab.cee.redhat.com/sfloess/knowledge-ai",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 3 - Alpha",
@@ -28,11 +28,10 @@ setup(
     ],
     python_requires=">=3.8",
     install_requires=[
-        "chromadb>=1.10.0",
-        "sentence-transformers>=2.0.0",
-        "numpy>=1.20.0",
+        "vectordb-ai>=0.1.0",
+        "semantic-search-ai>=0.1.0",
+        "consensus-ai>=0.1.0",
         "requests>=2.25.0",
-        "consensus-ai>=0.1.0",  # Multi-AI consensus library
     ],
     extras_require={
         "pdf": [
@@ -82,7 +81,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "knowledge-forge=knowledge_forge.cli:main",
+            "knowledge-ai=knowledge_ai.cli:main",
         ],
     },
 )
