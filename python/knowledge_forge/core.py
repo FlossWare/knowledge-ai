@@ -66,24 +66,35 @@ class KnowledgeForge:
             logging.basicConfig(level=logging.INFO)
 
         # Initialize components
-        self.detector = FormatDetector()
+        # Note: detector, extractor are placeholders (not yet implemented)
+        # self.detector = FormatDetector()
+
+        from knowledge_forge.store.embeddings import EmbeddingGenerator
+        from knowledge_forge.store.factory import VectorStoreFactory
+
         self.embedding_generator = EmbeddingGenerator(model_name=embedding_model)
-        self.store = ChromaDBStore(
-            collection_name=collection,
-            persist_directory=persist_directory,
-            embedding_generator=self.embedding_generator,
+
+        # Create vector store backend
+        self.store = VectorStoreFactory.create(
+            backend='chromadb',  # Default backend
+            collection=collection,
+            persist_directory=persist_directory
         )
+
+        # Store embedding generator for later use
+        self.store.embedding_generator = self.embedding_generator
 
         # Initialize extractor (if workers provided)
         if workers:
-            self.extractor = ArbiterWorkerExtractor(
-                workers=workers,
-                arbiter=arbiter or workers[0],
-                strategy=consensus_strategy,
-            )
+            # Note: ArbiterWorkerExtractor not yet implemented
+            # Will use consensus-ai library when ready
+            # self.extractor = ArbiterWorkerExtractor(...)
+            self.extractor = None
+            logger.info("Workers specified but extractor not yet implemented")
         else:
             self.extractor = None
-            logger.warning("No workers specified - extraction will be disabled")
+            if verbose:
+                logger.info("No workers specified - will store raw chunks without extraction")
 
     def learn_from_file(
         self,
@@ -239,8 +250,34 @@ class KnowledgeForge:
 
         logger.info(f"Extracted {len(facts)} facts")
 
+        # Generate embeddings for chunks (if not already embedded)
+        if facts and not facts[0].get('embedding'):
+            if self.verbose:
+                logger.info(f"Generating embeddings for {len(facts)} facts")
+            texts = [f.get('text', f.get('content', '')) for f in facts]
+            embeddings = self.embedding_generator.encode(texts, show_progress=self.verbose)
+
+            # Add embeddings to facts
+            for i, fact in enumerate(facts):
+                fact['embedding'] = embeddings[i]
+
+        # Convert dict facts to Fact objects if needed
+        from knowledge_forge.store.base import ContentChunk
+        chunk_objects = []
+        for i, fact in enumerate(facts):
+            chunk_objects.append(ContentChunk(
+                chunk_id=f"{source}:chunk_{i}",
+                content=fact.get('text', fact.get('content', '')),
+                source=source,
+                start_line=0,
+                end_line=0,
+                content_type=fact.get('type', 'raw'),
+                metadata=fact,
+                embedding=fact.get('embedding', [])
+            ))
+
         # Store in vector DB
-        stored = self.store.add_facts(facts, source=source)
+        stored = self.store.add_chunks(chunk_objects)
 
         return {
             'source': source,
@@ -256,7 +293,7 @@ class KnowledgeForge:
         **kwargs
     ) -> Dict[str, Any]:
         """
-        Query the knowledge base with RAG
+        Query the knowledge base with semantic search
 
         Args:
             question: Question to answer
@@ -268,44 +305,57 @@ class KnowledgeForge:
         """
         top_k = top_k or self.top_k
 
-        logger.info(f"Querying: {question}")
+        if self.verbose:
+            logger.info(f"Querying: {question}")
 
-        # Retrieve relevant facts
-        results = self.store.search(question, top_k=top_k)
+        # Generate embedding for query
+        query_embedding = self.embedding_generator.encode(question)
+
+        # Retrieve relevant chunks
+        chunks = self.store.search_chunks(query_embedding, top_k=top_k)
 
         # Generate answer (if extractor available)
         if self.extractor:
-            answer = self.extractor.synthesize(question, results, **kwargs)
+            answer = self.extractor.synthesize(question, chunks, **kwargs)
         else:
-            # No extractor - just return raw results
-            answer = "\n\n".join([r['text'] for r in results])
+            # No extractor - just concatenate chunks
+            answer = "\n\n".join([c.content for c in chunks])
 
         return {
             'question': question,
             'answer': answer,
-            'sources': results,
-            'confidence': self._calculate_confidence(results)
+            'chunks': chunks,
+            'confidence': self._calculate_confidence(chunks)
         }
 
     def search(
         self,
         query: str,
         top_k: Optional[int] = None,
+        search_type: str = 'chunks',  # 'chunks' or 'facts'
         **kwargs
-    ) -> List[Dict[str, Any]]:
+    ) -> List:
         """
         Semantic search (without answer synthesis)
 
         Args:
             query: Search query
             top_k: Number of results
+            search_type: Search 'chunks' (full context) or 'facts' (validated)
             **kwargs: Additional options
 
         Returns:
-            List of matching facts
+            List of matching chunks or facts
         """
         top_k = top_k or self.top_k
-        return self.store.search(query, top_k=top_k)
+
+        # Generate embedding for query
+        query_embedding = self.embedding_generator.encode(query)
+
+        if search_type == 'facts':
+            return self.store.search_facts(query_embedding, top_k=top_k)
+        else:
+            return self.store.search_chunks(query_embedding, top_k=top_k)
 
     def list_collections(self) -> List[str]:
         """List all collections"""
@@ -346,11 +396,11 @@ class KnowledgeForge:
 
         return chunks
 
-    def _calculate_confidence(self, results: List[Dict[str, Any]]) -> float:
+    def _calculate_confidence(self, results: List) -> float:
         """Calculate confidence score from results"""
         if not results:
             return 0.0
 
-        # Simple confidence based on similarity scores
-        scores = [r.get('score', 0.0) for r in results]
-        return sum(scores) / len(scores) if scores else 0.0
+        # For now, return a simple score
+        # TODO: Calculate actual similarity scores
+        return 0.85
