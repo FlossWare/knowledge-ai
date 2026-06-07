@@ -5,7 +5,7 @@ with open("../README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="knowledge-ai",
-    version="0.2.0",
+    version="0.2",
     author="FlossWare (sfloess)",
     author_email="sfloess@redhat.com",
     description="Universal knowledge ingestion library for AI systems",
@@ -28,9 +28,9 @@ setup(
     ],
     python_requires=">=3.8",
     install_requires=[
-        "vectordb-ai>=0.1.0",
-        "semantic-search-ai>=0.1.0",
-        "consensus-ai>=0.1.0",
+        "vectordb-ai>=0.1",
+        "semantic-search-ai>=0.1",
+        "consensus-ai>=0.1",
         "requests>=2.25.0",
     ],
     extras_require={

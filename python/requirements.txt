@@ -1,7 +1,7 @@
 # FlossWare AI dependencies
-vectordb-ai>=0.1.0
-semantic-search-ai>=0.1.0
-consensus-ai>=0.1.0
+vectordb-ai>=0.1
+semantic-search-ai>=0.1
+consensus-ai>=0.1
 
 # Core utilities
 requests>=2.25.0
