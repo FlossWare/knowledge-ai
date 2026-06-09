@@ -38,8 +38,11 @@ class KnowledgeConfig:
     ])
     consensus_arbiter: str = 'claude-opus-4-7'
     
-# NOTE: Logging (#2) and telemetry (#3) are always enabled in consensus-ai v2.0+
-# No configuration needed - they're built-in enhancements
+    # ENHANCEMENT #2: Decision logging
+    consensus_log_decisions: bool = True  # Log multi-AI decisions
+    
+    # ENHANCEMENT #3: Telemetry
+    consensus_enable_telemetry: bool = True  # Track cost/performance
 ```
 
 ### Environment Variables
@@ -74,8 +77,9 @@ class ContinuousTuning:
                 workers=config.consensus_workers,
                 arbiter=config.consensus_arbiter,
                 graceful_fallback=True,
-                min_workers=config.consensus_min_workers
-                # NOTE: Telemetry (#3) and logging (#2) always enabled - no config needed
+                min_workers=config.consensus_min_workers,
+                enable_telemetry=config.consensus_enable_telemetry,  # ENHANCEMENT #3
+                log_decisions=config.consensus_log_decisions  # ENHANCEMENT #2
             )
         else:
             self.orchestrator = None
@@ -160,8 +164,9 @@ class TrainingDataFilter:
                 workers=config.consensus_workers,
                 arbiter=config.consensus_arbiter,
                 graceful_fallback=True,
-                min_workers=config.consensus_min_workers
-                # NOTE: Telemetry (#3) and logging (#2) always enabled - no config needed
+                min_workers=config.consensus_min_workers,
+                enable_telemetry=config.consensus_enable_telemetry,  # ENHANCEMENT #3
+                log_decisions=config.consensus_log_decisions  # ENHANCEMENT #2
             )
         else:
             self.orchestrator = None
