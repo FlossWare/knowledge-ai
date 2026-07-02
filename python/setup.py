@@ -5,7 +5,7 @@ with open("../README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="knowledge-ai",
-    version="0.9",
+    version="0.10",
     author="FlossWare (sfloess)",
     author_email="sfloess@redhat.com",
     description="Universal knowledge ingestion library for AI systems",
